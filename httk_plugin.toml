@@ -1,0 +1,4 @@
+[plugin]
+name = "httk-workflow-gromacs"
+description = "Example GROMACS workflow packages (grompp + mdrun of a prepared system)"
+workflows = ["workflows/gromacs-run"]

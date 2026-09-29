@@ -1,0 +1,26 @@
+                :-) GROMACS - gmx grompp, 2026.3-conda_forge (-:
+
+Executable:   /opt/gromacs/bin.AVX2_256/gmx
+Data prefix:  /opt/gromacs
+Working dir:  /scratch/gromacs/scratch-fatal
+Command line:
+  gmx grompp -f em.mdp -c conf.gro -p ar.top -o run.tpr
+
+
+ERROR 1 [file ar.top, line 23]:
+  ERROR: The cut-off length is longer than half the shortest box vector or
+  longer than the smallest box diagonal element. Increase the box size or
+  decrease rlist.
+
+
+
+-------------------------------------------------------
+Program:     gmx grompp, version 2026.3-conda_forge
+Source file: src/gromacs/gmxpreprocess/grompp.cpp (line 2419)
+
+Fatal error:
+There was 1 error in input file(s)
+
+For more information and tips for troubleshooting, please check the GROMACS
+website at https://manual.gromacs.org/current/user-guide/run-time-errors.html
+-------------------------------------------------------
