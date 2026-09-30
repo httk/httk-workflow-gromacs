@@ -110,7 +110,7 @@ httk workspace settings set --key gromacs.command --value gmx_mpi WORKSPACE
 httk job new --workflow gromacs.run --input configuration=conf.gro \
     --input topology=topol.top --input parameters=em.mdp
 httk workflow run
-httk workflow collect --into results.sqlite
+httk collect --into results.sqlite
 ```
 
 The settings `gromacs.command` (default `gmx`) and `gromacs.mdrun_options`
@@ -121,7 +121,7 @@ results stay in the job's persistent workdir (`run.log`, `run.edr`, `run.gro`,
 ## Collecting
 
 `gromacs.run` declares no outputs and has no collector, so collecting it is
-*run-only*: `httk workflow collect --into` stores one provenance `runs` entry
+*run-only*: `httk collect --into` stores one provenance `runs` entry
 per job and no data records. The energies are still in the workdir's `run.log`
 for {py:func}`~httk.codes.gromacs.parse_mdrun_log`.
 
