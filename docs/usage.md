@@ -125,4 +125,4 @@ results stay in the job's persistent workdir (`run.log`, `run.edr`, `run.gro`,
 per job and no data records. The energies are still in the workdir's `run.log`
 for {py:func}`~httk.codes.gromacs.parse_mdrun_log`.
 
-<!-- ponytail: no energy output yet; declaring one needs an MD energy property in httk-schemas first (total_energy is a DFT total energy), then a collector like collect_pw of httk-workflow-qe. -->
+<!-- ponytail: no energy output yet; declaring one needs an MD energy property in httk-schemas first (total_energy is a DFT total energy), then a reading helper like `read_total_energy` of `httk.codes.qe.collect`. -->
