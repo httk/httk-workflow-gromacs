@@ -1,0 +1,19 @@
+# Recognizes a finished free-standing GROMACS mdrun: one <stem>.log with its <stem>.tpr (or .mdp).
+
+[workflow]
+name = "gromacs.calculation"
+description = "a finished GROMACS mdrun: one log file with its run input beside it"
+
+[workflow.recognize]
+file = "recognize.py"
+priority = 10
+requires = ["*.log"]
+
+[workflow.outputs.average_total_energy]
+entry_type = "records"
+role = "average_total_energy"
+ref = "https://schemas.httk.org/defs/v0.1/properties/core/average_total_energy"
+description = "The total energy averaged over the molecular dynamics run, as GROMACS prints it in the averages of md.log, in eV."
+
+[workflow.collect]
+file = "collect.py"

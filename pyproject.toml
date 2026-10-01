@@ -77,7 +77,7 @@ include = ["httk.codes*", "httk.registry.codes*"]
 namespaces = true
 
 [tool.setuptools.package-data]
-"httk.codes.gromacs" = ["py.typed", "*.sh"]
+"httk.codes.gromacs" = ["py.typed", "*.sh", "collectors/*/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

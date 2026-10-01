@@ -125,4 +125,24 @@ results stay in the job's persistent workdir (`run.log`, `run.edr`, `run.gro`,
 per job and no data records. The energies are still in the workdir's `run.log`
 for {py:func}`~httk.codes.gromacs.parse_mdrun_log`.
 
-<!-- ponytail: no energy output yet; declaring one needs an MD energy property in httk-schemas first (total_energy is a DFT total energy), then a reading helper like `read_total_energy` of `httk.codes.qe.collect`. -->
+### Recognized calculations
+
+A finished `mdrun` that was not started by a workspace is collected by the
+registered `gromacs.calculation` collector:
+`httk.workflow.collect_tree(root)` finds every directory holding exactly one
+`<stem>.log` whose first 100 lines carry the banner `GROMACS - gmx mdrun`
+together with `<stem>.tpr` (else `<stem>.mdp`), compressed or not, and collects
+its `average_total_energy`. The value is GROMACS's own printed average: the
+`Total Energy` of the last `A V E R A G E S` section of the log, in eV. The
+identity is a digest of the `.tpr` (else the `.mdp`) and the physics options of the
+`Command line:` the log records: `-nsteps`, the basenames of `-rerun` and
+`-plumed`, and whether `-cpi` is present (a continuation). The program name,
+paths, thread and performance options are ignored, so the same run on another
+machine keeps its identity, as does moving the directory. A log without such
+options is identified by the input alone. Of an appended continuation log only
+the last part (after its last banner) is judged, so a part that died before
+finishing is degraded. The part logs of a `-noappend` continuation are several logs and
+are reported as unclaimed. A directory with several mdrun logs or without the run input is
+reported as unclaimed; an energy minimisation or unfinished run has no averages
+and is claimed and degraded.
+{py:func}`~httk.codes.gromacs.collect.find_outputs` is the same banner-based finder.

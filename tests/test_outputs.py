@@ -6,6 +6,7 @@ import pytest
 
 from conftest import DATA
 from httk.codes.gromacs import KJ_MOL_TO_EV, parse_fatal_errors, parse_mdrun_log
+from httk.codes.gromacs.outputs import _parse
 
 
 def test_a_converged_energy_minimization() -> None:
@@ -79,3 +80,25 @@ def test_grompp_input_errors_come_before_the_fatal_error() -> None:
         "There was 1 error in input file(s)",
     )
     assert parse_fatal_errors((DATA / "em.log").read_text(encoding="utf-8")) == ()
+
+
+def test_the_run_averages_are_parsed_from_the_last_averages_table() -> None:
+    result = parse_mdrun_log(DATA / "md.log")
+    assert result.average_energies is not None
+    assert result.average_energies["Total Energy"] == -4.41489
+    assert result.average_total_energy_ev == pytest.approx(-4.41489 * KJ_MOL_TO_EV)
+
+
+def test_a_minimisation_has_no_averages() -> None:
+    result = parse_mdrun_log(DATA / "em.log")
+    assert result.average_energies is None and result.average_total_energy_ev is None
+
+
+def test_a_two_part_log_reads_both_potential_and_averages_from_the_last_part() -> None:
+    text = (DATA / "md.log").read_text()
+    part2 = text.replace("-1.29971e+01", "-9.99000e+00").replace("-4.41489e+00", "-3.00000e+00")
+    result = _parse(text + part2)
+    assert result.average_energies is not None and result.average_energies["Total Energy"] == -3.0
+    assert result.potential_energy_kj_mol == -9.99
+    single = _parse(text)
+    assert single.potential_energy_kj_mol == parse_mdrun_log(DATA / "md.log").potential_energy_kj_mol

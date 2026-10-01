@@ -54,7 +54,14 @@ class GromacsRunReport:
             "mdrun": None if self.mdrun is None else self.mdrun.as_mapping(),
             "classification": self.classification,
             "diagnostics": [item.as_mapping() for item in self.diagnostics],
-            "result": {**result, "energies": dict(self.result.energies), "errors": list(self.result.errors)},
+            "result": {
+                **result,
+                "energies": dict(self.result.energies),
+                "average_energies": None
+                if self.result.average_energies is None
+                else dict(self.result.average_energies),
+                "errors": list(self.result.errors),
+            },
         }
 
     def write(self, path: str | os.PathLike[str]) -> Path:
