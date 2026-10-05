@@ -37,6 +37,7 @@ def add_commands(commands: "argparse._SubParsersAction[argparse.ArgumentParser]"
     run.add_argument("--topology", default="topol.top")
     run.add_argument("--mdrun-options", default="")
     run.add_argument("--timeout", type=float)
+    run.add_argument("--launch", action=argparse.BooleanOptionalAction, default=None)
     run.add_argument("argv", nargs=argparse.REMAINDER)
     energy = commands.add_parser("gromacs-energy")
     energy.add_argument("--log", default="run.log")
@@ -69,6 +70,7 @@ def run_command(arguments: argparse.Namespace) -> int:
             mdrun_argv=[*gmx, "mdrun", "-deffnm", deffnm, *shlex.split(arguments.mdrun_options)],
             deffnm=deffnm,
             timeout=arguments.timeout,
+            launch=arguments.launch,
         )
         print(Path(arguments.directory, "gromacs-run-report.json"))
         return _RUN_EXIT[report.classification]

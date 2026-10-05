@@ -10,8 +10,8 @@ clean.
 
 Settings, resolved job parameter -> ``HTTK_*`` variable -> workspace setting:
 
-* ``gromacs.command``: the command that starts GROMACS (default ``gmx``), e.g.
-  ``gmx_mpi`` or ``mpirun -np 4 gmx_mpi``;
+* ``gromacs.command``: the GROMACS program (default ``gmx``), e.g.
+  ``gmx_mpi``; the attempt's launch prefix is prepended to ``mdrun`` only;
 * ``gromacs.mdrun_options``: extra ``mdrun`` options (default ``-nt 1``, one
   thread; e.g. ``-nt 8`` or ``-ntomp 4``).
 """

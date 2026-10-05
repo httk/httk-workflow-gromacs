@@ -51,7 +51,9 @@ else:
   and returns a {py:class}`~httk.codes.gromacs.GromacsRunReport` classified as
   `completed`, `crashed`, `nonconverged`, `process_failure` or `timeout`, also
   written to `gromacs-run-report.json`. `mdrun` runs only when `grompp`
-  succeeded; a failed `grompp` is `crashed`.
+  succeeded; a failed `grompp` is `crashed`. Both commands name only the
+  program (`gmx` or `gmx_mpi`): the attempt's launch prefix is prepended to
+  `mdrun` only (`launch=False` suppresses it), and `grompp` runs serially.
 - {py:func}`~httk.codes.gromacs.diagnose_gromacs` diagnoses a finished run.
 
 ## Diagnostics
@@ -85,10 +87,17 @@ temperature=$(httk_gromacs_energy --term Temperature)
 
 | Function | Bridge command | Exit status |
 | --- | --- | --- |
-| `httk_gromacs_run [--directory .] [--deffnm run] [--configuration conf.gro] [--topology topol.top] [--mdrun-options=OPTS] [--timeout S] -- GMX...` | `gromacs-run` | `0` completed, `20` crashed, `21` nonconverged, `22` process failure, `124` timeout (as `vasp-run`); prints the report path |
+| `httk_gromacs_run [--directory .] [--deffnm run] [--configuration conf.gro] [--topology topol.top] [--mdrun-options=OPTS] [--timeout S] [--no-launch] -- GMX...` | `gromacs-run` | `0` completed, `20` crashed, `21` nonconverged, `22` process failure, `124` timeout (as `vasp-run`); prints the report path |
 | `httk_gromacs_energy [--log run.log] [--term NAME] [--unit kj_mol\|ev]` | `gromacs-energy` | `0` and the potential energy (or the named energies-table term), `1` when there is none |
 | `httk_gromacs_converged [--log run.log]` | `gromacs-converged` | `0` a converged minimization, `1` not converged, dynamics or unknown |
 | `httk_gromacs_diagnose [--log run.log] [--json]` | `gromacs-diagnose` | `0` clean, `20` when it printed diagnostics |
+
+`GMX` names only the program (`gmx` or `gmx_mpi`). The attempt's launch prefix (the
+parallel start, the `HTTK_WORKFLOW_LAUNCH` variable the workflow manager sets from
+the `manager.launch_template` setting, or the built-in Slurm prefix) is prepended to
+the `mdrun` command only; `grompp` runs serially, and `--no-launch` runs `mdrun` as
+given too. A command that already starts with a launcher such as `mpirun` or `srun`
+is refused when a prefix applies.
 
 `httk_gromacs_run` runs `GMX grompp -f DEFFNM.mdp -c CONFIGURATION -p TOPOLOGY
 -o DEFFNM.tpr` and then `GMX mdrun -deffnm DEFFNM OPTS`: the run-parameter file
@@ -114,7 +123,8 @@ httk collect --into results.sqlite
 ```
 
 The settings `gromacs.command` (default `gmx`) and `gromacs.mdrun_options`
-(default `-nt 1`) say how to start GROMACS and what to pass to `mdrun`. The
+(default `-nt 1`) name the GROMACS program (`gmx` or `gmx_mpi`; `mdrun` gets the
+launch prefix, `grompp` runs serially) and what to pass to `mdrun`. The
 results stay in the job's persistent workdir (`run.log`, `run.edr`, `run.gro`,
 ...).
 
