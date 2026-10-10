@@ -116,7 +116,7 @@ directly with `--workflow-dir`:
 
 ```console
 httk workspace settings set --key gromacs.command --value gmx_mpi WORKSPACE
-httk job new --workflow gromacs.run --input configuration=conf.gro \
+httk job new --install --workflow gromacs.run --input configuration=conf.gro \
     --input topology=topol.top --input parameters=em.mdp
 httk workflow run
 httk collect --into results.sqlite

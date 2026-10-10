@@ -52,13 +52,12 @@ def test_gromacs_run_minimizes_argon_and_collects_one_run(
         workspace,
         "gromacs.run",
         inputs={"configuration": DATA / "ar.gro", "topology": DATA / "ar.top", "parameters": DATA / "em.mdp"},
+        install=True,
     )
     with TaskManager(workspace, heartbeat_interval=0.01) as manager:
         manager.run_until_idle(timeout=600.0)
-    marker = workspace.find_marker_by_id(job.job_id)
-    assert marker is not None
-    assert marker.kind == "succeeded", workspace.read_state(marker).get("failure")
-    (record,) = job_records(workspace)
+    [record] = job_records(workspace, states=("succeeded", "failed"))
+    assert (record.job_id, record.state) == (job.job_id, "succeeded"), record.failure
     assert record.workdir is not None
     result = parse_mdrun_log(record.workdir / "run.log")
     assert result.potential_energy_kj_mol == pytest.approx(-13.4827, abs=1e-3)
