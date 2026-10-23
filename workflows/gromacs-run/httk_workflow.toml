@@ -9,6 +9,7 @@
 name = "gromacs.run"
 description = "one GROMACS grompp + mdrun run of a prepared configuration, topology and run parameters"
 requires = ["httk-workflow>=2.1.1", "httk-workflow-gromacs>=0.1.0"]
+settings = ["gromacs.command", "gromacs.mdrun_options"]
 
 [workflow.runner]
 entry = "run.py"
