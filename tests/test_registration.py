@@ -30,3 +30,7 @@ import httk.codes.gromacs
 assert len(credits.entries()["Calculations with GROMACS"]) == 1
 """
     subprocess.run([sys.executable, "-c", script], check=True)
+
+
+def test_gromacs_declares_its_application_settings() -> None:
+    assert code_support("gromacs").settings == ("gromacs.command", "gromacs.mdrun_options")
