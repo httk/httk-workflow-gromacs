@@ -112,13 +112,13 @@ one Python runner step that stages the `configuration`, `topology` and
 `parameters` inputs as `conf.gro`, `topol.top` and `run.mdp`, runs `grompp` and
 `mdrun -deffnm run`, and fails with the first diagnostic code when the run is
 not clean. Install it with `httk plugin install` of the repository, or use it
-directly with `--workflow-dir`:
+directly with `httk job new DIR`:
 
 ```console
-httk workspace settings set --key gromacs.command --value gmx_mpi WORKSPACE
-httk job new --install --workflow gromacs.run --input configuration=conf.gro \
+httk workspace set -w WORKSPACE gromacs.command=gmx_mpi
+httk job new --install gromacs.run --input configuration=conf.gro \
     --input topology=topol.top --input parameters=em.mdp
-httk workflow run
+httk run
 httk collect --into results.sqlite
 ```
 
